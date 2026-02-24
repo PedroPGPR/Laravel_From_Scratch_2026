@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\IdeaRequest;
 use App\Models\Idea;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class IdeaController extends Controller
 {
@@ -12,10 +14,8 @@ class IdeaController extends Controller
      */
     public function index()
     {
-        $ideas = Idea::all();
-
-        return view('ideas/index', [
-            'ideas' => $ideas,
+        return view('ideas.index', [
+            'ideas' => Auth::user()->ideas,
         ]);
     }
 
@@ -24,7 +24,7 @@ class IdeaController extends Controller
      */
     public function create()
     {
-        return view('ideas/create');
+        return view('ideas.create');
     }
 
     /**
@@ -32,7 +32,7 @@ class IdeaController extends Controller
      */
     public function store(IdeaRequest $request)
     {
-        Idea::create([
+        Auth::user()->ideas()->create([
             'description' => $request->input('idea'),
             'state' => 'pending',
         ]);
@@ -45,7 +45,9 @@ class IdeaController extends Controller
      */
     public function show(Idea $idea)
     {
-        return view('ideas/show', [
+        Gate::authorize('update', $idea);
+
+        return view('ideas.show', [
             'idea' => $idea,
         ]);
     }
@@ -55,7 +57,9 @@ class IdeaController extends Controller
      */
     public function edit(Idea $idea)
     {
-        return view('ideas/edit', [
+        Gate::authorize('update', $idea);
+
+        return view('ideas.edit', [
             'idea' => $idea,
         ]);
     }
@@ -65,6 +69,8 @@ class IdeaController extends Controller
      */
     public function update(IdeaRequest $request, Idea $idea)
     {
+        Gate::authorize('update', $idea);
+
         $idea->update([
             'description' => $request->input('idea'),
         ]);
@@ -77,6 +83,8 @@ class IdeaController extends Controller
      */
     public function destroy(Idea $idea)
     {
+        Gate::authorize('update', $idea);
+
         $idea->delete();
 
         return redirect('/ideas');
