@@ -2,12 +2,13 @@
 
 use App\Models\Idea;
 use App\Models\Step;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 
 it('belongs to a user', function () {
     $idea = Idea::factory()->create();
 
-    expect($idea->user)->toBeInstanceOf(\App\Models\User::class);
+    expect($idea->user)->toBeInstanceOf(User::class);
 });
 
 it('can have many steps', function () {

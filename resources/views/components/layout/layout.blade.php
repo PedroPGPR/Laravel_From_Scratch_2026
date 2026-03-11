@@ -10,23 +10,23 @@
 </head>
 
 <body class="bg-background text-foreground">
-    <x-layout.nav />
+<x-layout.nav/>
 
-    <main class="max-w-7xl mx-auto px-6">
-        {{ $slot }}
-    </main>
+<main class="max-w-7xl mx-auto px-6">
+    {{ $slot }}
+</main>
 
-    @session('success')
-        <div 
-            x-data="{ show: true }"
-            x-init="setTimeout(() => show = false, 2000)"
-            x-show="show"
-            x-transition.opacity.duration.500ms
-            class="fixed bottom-4 right-4 btn"
-        >
-            {{ $value }}
-        </div>
-    @endsession
+@session('success')
+<div
+    x-data="{ show: true }"
+    x-init="setTimeout(() => show = false, 2000)"
+    x-show="show"
+    x-transition.opacity.duration.500ms
+    class="fixed bottom-4 right-4 btn"
+>
+    {{ $value }}
+</div>
+@endsession
 </body>
 
 </html>

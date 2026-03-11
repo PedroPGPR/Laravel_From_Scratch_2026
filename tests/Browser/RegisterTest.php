@@ -33,5 +33,5 @@ it('requires a valid email to register', function () {
         ->type('email', 'not-a-valid-email')
         ->type('password', 'password123')
         ->click('#register-button')
-        ->assertPathIs('/register')
+        ->assertPathIs('/register');
 });
