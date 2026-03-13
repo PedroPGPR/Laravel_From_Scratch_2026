@@ -12,6 +12,10 @@ Route::prefix('ideas')->group(function () {
         ->middleware('auth')
         ->name('ideas.index');
 
+    Route::post('/', [IdeaController::class, 'store'])
+        ->middleware('auth')
+        ->name('ideas.store');
+
     Route::get('/{idea}', [IdeaController::class, 'show'])
         ->middleware('auth')
         ->name('ideas.show');

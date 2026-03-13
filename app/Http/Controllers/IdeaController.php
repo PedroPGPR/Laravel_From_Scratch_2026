@@ -19,16 +19,12 @@ class IdeaController extends Controller
      */
     public function index(Request $request)
     {
-        $status = $request->status;
-        if (! in_array($status, IdeaStatus::values())) {
-            $status = null;
-        }
-
         $ideas = Auth::user()
             ->ideas()
-            ->when($status, function ($query) use ($status) {
-                $query->where('status', $status);
+            ->when(in_array($request->status, IdeaStatus::values()), function ($query) use ($request) {
+                $query->where('status', $request->status);
             })
+            ->latest('created_at')
             ->get();
 
         return view('ideas.index', [
@@ -48,9 +44,11 @@ class IdeaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreIdeaRequest $request): void
+    public function store(StoreIdeaRequest $request): RedirectResponse
     {
-        //
+        Auth::user()->ideas()->create($request->validated());
+
+        return to_route('ideas.index')->with('success', 'Idea has been created.');
     }
 
     /**
