@@ -2,7 +2,6 @@
 
 use App\Models\Idea;
 use App\Models\User;
-use function Pest\Laravel\assertDatabaseHas;
 
 it('can create a idea', function () {
     $this->actingAs($user = User::factory()->create());
@@ -12,6 +11,10 @@ it('can create a idea', function () {
         ->fill('title', 'My New Idea')
         ->click('@button-status-completed')
         ->fill('description', 'This is a description of my new idea.')
+        ->fill('#new-link', 'https://example.com')
+        ->click('@add-link-button')
+        ->fill('#new-link', 'https://example-number-two.com')
+        ->click('@add-link-button')
         ->click('@submit-idea-button')
         ->assertPathIs('/ideas');
 
@@ -20,5 +23,9 @@ it('can create a idea', function () {
         'title' => 'My New Idea',
         'description' => 'This is a description of my new idea.',
         'status' => 'completed',
+        'links' => [
+            'https://example.com',
+            'https://example-number-two.com',
+        ],
     ]);
 });
