@@ -38,6 +38,12 @@
             <div class="grid md:grid-cols-2 gap-6">
                 @forelse($ideas as $idea)
                     <x-card href="{{ route('ideas.show', $idea) }}">
+                        @if($idea->image_path)
+                            <div class="mb-4 -mx-4 -mt-4 rounded-t-lg overflow-hidden">
+                                <img src="{{ asset('storage/' . $idea->image_path) }}" alt="Idea Image" class="w-full h-auto object-cover">
+                            </div>
+                        @endif
+
                         <h3 class="text-foreground text-lg">{{ $idea->title }}</h3>
 
                         <div class="mt-2">
@@ -63,9 +69,12 @@
                     status: 'pending',
                     newLink: '',
                     links: [],
+                    newStep: '',
+                    steps: [],
                 }"
                 method="POST"
                 action="{{ route('ideas.store') }}"
+                enctype="multipart/form-data"
             >
                 @csrf
                 <div class="space-y-6">
@@ -105,6 +114,56 @@
                         type="textarea"
                         placeholder="Describe your idea..."
                     />
+
+                    <div class="space-y-2">
+                        <label for="image" class="label">Featured Image</label>
+                        <input type="file" name="image" id="image" accept="image/*">
+                        <x-forms.error name="image" />
+                    </div>
+
+                    <div>
+                        <fieldset class="space-y-3">
+                            <legend class="label">Steps</legend>
+
+                            <template x-for="(step, index) in steps" :key="index">
+                                <div class="flex gap-x-2 items-center">
+                                    <input type="text" name="steps[]" x-model="step" class="input"/>
+
+                                    <button
+                                        type="button"
+                                        @click="steps.splice(index, 1)"
+                                        data-test="remove-step-button"
+                                        aria-label="Remove step button"
+                                        class="form-muted-icon"
+                                    >
+                                        <x-icons.close />
+                                    </button>
+                                </div>
+                            </template>
+
+                            <div class="flex gap-x-2 items-center">
+                                <input
+                                    x-model="newStep"
+                                    type="text"
+                                    id="new-step"
+                                    placeholder="What needs to be done?"
+                                    class="input flex-1"
+                                    spellcheck="false"
+                                />
+
+                                <button
+                                    type="button"
+                                    class="form-muted-icon"
+                                    @click="steps.push(newStep.trim()); newStep = ''"
+                                    data-test="add-step-button"
+                                    aria-label="Add step button"
+                                    :disabled="newStep.trim().length === 0"
+                                >
+                                    <x-icons.close class="rotate-45"/>
+                                </button>
+                            </div>
+                        </fieldset>
+                    </div>
 
                     <div>
                         <fieldset class="space-y-3">

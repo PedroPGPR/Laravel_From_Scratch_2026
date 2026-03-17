@@ -3,7 +3,7 @@
 use App\Models\Idea;
 use App\Models\User;
 
-it('can create a idea', function () {
+it('can create a idea', function (): never {
     $this->actingAs($user = User::factory()->create());
 
     visit('/ideas')
@@ -11,6 +11,10 @@ it('can create a idea', function () {
         ->fill('title', 'My New Idea')
         ->click('@button-status-completed')
         ->fill('description', 'This is a description of my new idea.')
+        ->fill('#new-step', 'Create a step for an idea')
+        ->click('@add-step-button')
+        ->fill('#new-step', 'Does this work?')
+        ->click('@add-step-button')
         ->fill('#new-link', 'https://example.com')
         ->click('@add-link-button')
         ->fill('#new-link', 'https://example-number-two.com')

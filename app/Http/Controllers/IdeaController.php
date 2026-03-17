@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Actions\CreateIdeaAction;
 use App\Http\Requests\StoreIdeaRequest;
 use App\Http\Requests\UpdateIdeaRequest;
 use App\IdeaStatus;
@@ -11,6 +12,7 @@ use App\Models\Idea;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Throwable;
 
 class IdeaController extends Controller
 {
@@ -43,10 +45,12 @@ class IdeaController extends Controller
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @throws Throwable
      */
-    public function store(StoreIdeaRequest $request): RedirectResponse
+    public function store(StoreIdeaRequest $request, CreateIdeaAction $ideaAction): RedirectResponse
     {
-        Auth::user()->ideas()->create($request->validated());
+        $ideaAction->handle($request->safe()->all());
 
         return to_route('ideas.index')->with('success', 'Idea has been created.');
     }

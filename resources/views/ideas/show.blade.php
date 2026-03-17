@@ -22,6 +22,12 @@
         </div>
 
         <div class="mt-8 space-y-6">
+            @if($idea->image_path)
+                <div class="rounded-lg overflow-hidden">
+                    <img src="{{ asset('storage/' . $idea->image_path) }}" alt="Idea Image" class="w-full h-auto object-cover">
+                </div>
+            @endif
+
             <h1 class="font-bold text-4xl">{{ $idea->title }}</h1>
 
             <div class="mt-2 flex gap-x-3 items-center">
@@ -37,6 +43,28 @@
             <x-card class="mt-6">
                 <div class="text-foreground max-w-none cursor-pointer">{{ $idea->description }}</div>
             </x-card>
+
+            @if($idea->steps->count())
+                <div>
+                    <h3 class="font-bold text-xl mt-6">Actionable Steps</h3>
+
+                    <div class="mt-3 space-y-2">
+                        @foreach($idea->steps as $step)
+                            <x-card>
+                                <form action="{{ route('steps.update', $step) }}" method="POST">
+                                    @csrf
+                                    @method('PATCH')
+
+                                    <div class="flex items-center gap-x-2">
+                                        <button type="submit" role="checkbox" class="size-5 flex items-center justify-center rounded-lg text-primary-foreground border {{ $step->is_completed ? 'bg-primary' : 'border-primary' }}">&check;</button>
+                                        <span class="{{ $step->is_completed ? 'line-through text-muted-foreground' : '' }}">{{ $step->description }}</span>
+                                    </div>
+                                </form>
+                            </x-card>
+                        @endforeach
+                    </div>
+                </div>
+            @endif
 
             @if($idea->links->count())
                 <div>

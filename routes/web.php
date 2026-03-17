@@ -3,6 +3,7 @@
 use App\Http\Controllers\IdeaController;
 use App\Http\Controllers\RegisteredUserController;
 use App\Http\Controllers\SessionsController;
+use App\Http\Controllers\StepController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', '/ideas'); // TODO: Change this to a welcome page or something else.
@@ -23,6 +24,12 @@ Route::prefix('ideas')->group(function () {
     Route::delete('/{idea}', [IdeaController::class, 'destroy'])
         ->middleware('auth')
         ->name('ideas.destroy');
+});
+
+Route::prefix('steps')->group(function () {
+    Route::patch('/{step}', [StepController::class, 'update'])
+        ->middleware('auth')
+        ->name('steps.update');
 });
 
 Route::get('/register', [RegisteredUserController::class, 'create'])
