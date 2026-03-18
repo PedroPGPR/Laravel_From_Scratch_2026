@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\IdeaController;
+use App\Http\Controllers\IdeaImageController;
 use App\Http\Controllers\RegisteredUserController;
 use App\Http\Controllers\SessionsController;
 use App\Http\Controllers\StepController;
@@ -21,9 +22,17 @@ Route::prefix('ideas')->group(function () {
         ->middleware('auth')
         ->name('ideas.show');
 
+    Route::patch('/{idea}', [IdeaController::class, 'update'])
+        ->middleware('auth')
+        ->name('ideas.update');
+
     Route::delete('/{idea}', [IdeaController::class, 'destroy'])
         ->middleware('auth')
         ->name('ideas.destroy');
+
+    Route::delete('/{idea}/image', [IdeaImageController::class, 'destroy'])
+        ->middleware('auth')
+        ->name('ideas.image.destroy');
 });
 
 Route::prefix('steps')->group(function () {

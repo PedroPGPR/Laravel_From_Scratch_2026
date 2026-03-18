@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Actions\CreateIdeaAction;
-use App\Http\Requests\StoreIdeaRequest;
-use App\Http\Requests\UpdateIdeaRequest;
+use App\Http\Requests\IdeaRequest;
 use App\IdeaStatus;
 use App\Models\Idea;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Throwable;
 
 class IdeaController extends Controller
@@ -48,7 +48,7 @@ class IdeaController extends Controller
      *
      * @throws Throwable
      */
-    public function store(StoreIdeaRequest $request, CreateIdeaAction $ideaAction): RedirectResponse
+    public function store(IdeaRequest $request, CreateIdeaAction $ideaAction): RedirectResponse
     {
         $ideaAction->handle($request->safe()->all());
 
@@ -60,6 +60,8 @@ class IdeaController extends Controller
      */
     public function show(Idea $idea)
     {
+        Gate::authorize('workWidth', $idea);
+
         return view('ideas.show', [
             'idea' => $idea,
         ]);
@@ -76,9 +78,10 @@ class IdeaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateIdeaRequest $request, Idea $idea): void
+    public function update(IdeaRequest $request, Idea $idea): void
     {
-        //
+        dd($request->all());
+        Gate::authorize('workWidth', $idea);
     }
 
     /**
@@ -86,6 +89,8 @@ class IdeaController extends Controller
      */
     public function destroy(Idea $idea): RedirectResponse
     {
+        Gate::authorize('workWidth', $idea);
+
         $idea->delete();
 
         return to_route('ideas.index');
