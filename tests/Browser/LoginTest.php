@@ -12,7 +12,7 @@ it('logs in a user', function () {
         ->type('email', $user->email)
         ->type('password', 'pestBrowserTest')
         ->click('#login-button')
-        ->assertPathIs('/');
+        ->assertPathIs(route('ideas.index'));
 
     $this->assertAuthenticated();
 });
@@ -26,7 +26,7 @@ it('logs out a user', function () {
 
     visit('/')
         ->click('@logout-button')
-        ->assertPathIs('/');
+        ->assertPathIs(route('session.create'));
 
     $this->assertGuest();
 });

@@ -27,10 +27,7 @@ class CreateIdeaAction
 
         DB::transaction(function () use ($data, $attributes) {
             $idea = $this->user->ideas()->create($data);
-
-            // Prepare data for steps
-            $steps = collect($attributes['steps'] ?? [])->map(fn ($step) => ['description' => $step]);
-            $idea->steps()->createMany($steps);
+            $idea->steps()->createMany($attributes['steps'] ?? []);
         });
     }
 }

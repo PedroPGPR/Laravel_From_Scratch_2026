@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers;
 
 use App\Actions\CreateIdeaAction;
+use App\Actions\UpdateIdeaAction;
 use App\Http\Requests\IdeaRequest;
 use App\IdeaStatus;
 use App\Models\Idea;
@@ -78,10 +79,13 @@ class IdeaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(IdeaRequest $request, Idea $idea): void
+    public function update(IdeaRequest $request, Idea $idea, UpdateIdeaAction $action): RedirectResponse
     {
-        dd($request->all());
         Gate::authorize('workWidth', $idea);
+
+        $action->handle($request->safe()->all(), $idea);
+
+        return back()->with('success', 'Idea has been updated.');
     }
 
     /**

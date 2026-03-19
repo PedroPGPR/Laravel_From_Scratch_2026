@@ -12,7 +12,7 @@
             newLink: '',
             links: @js(old('links', $idea->links ?? [])),
             newStep: '',
-            steps: @js(old('steps', $idea->steps->pluck('description'))),
+            steps: @js(old('steps', $idea->steps->map->only(['id', 'description', 'is_completed']))),
         }"
         method="POST"
         action="{{ $idea->exists ? route('ideas.update', $idea) : route('ideas.store') }}"
@@ -82,9 +82,10 @@
                 <fieldset class="space-y-3">
                     <legend class="label">Steps</legend>
 
-                    <template x-for="(step, index) in steps" :key="index">
+                    <template x-for="(step, index) in steps" :key="step.id || index">
                         <div class="flex gap-x-2 items-center">
-                            <input type="text" name="steps[]" x-model="step" class="input"/>
+                            <input type="text" :name="`steps[${index}][description]`" x-model="step.description" class="input" readonly />
+                            <input type="hidden" :name="`steps[${index}][is_completed]`" x-model="step.is_completed ? '1' : '0'" class="input" readonly />
 
                             <button
                                 type="button"
@@ -111,7 +112,10 @@
                         <button
                             type="button"
                             class="form-muted-icon"
-                            @click="steps.push(newStep.trim()); newStep = ''"
+                            @click="
+                                steps.push({ description: newStep.trim(), is_completed: false });
+                                newStep = ''
+                            "
                             data-test="add-step-button"
                             aria-label="Add step button"
                             :disabled="newStep.trim().length === 0"
